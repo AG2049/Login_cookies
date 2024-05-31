@@ -1,0 +1,37 @@
+<?php
+session_start();
+
+// Si la sesión ya está iniciada, redirigir a welcome.php
+if (isset($_SESSION['username'])) {
+    header("Location: welcome.php");
+    exit();
+}
+
+// Si existen las cookies, iniciar sesión automáticamente
+if (isset($_COOKIE['username']) && isset($_COOKIE['password'])) {
+    $_SESSION['username'] = $_COOKIE['username'];
+    header("Location: welcome.php");
+    exit();
+}
+
+$saved_username = isset($_COOKIE['username']) ? $_COOKIE['username'] : '';
+$saved_password = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form action="validar.php" method="POST">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($saved_username); ?>" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($saved_password); ?>" required><br><br>
+        <input type="checkbox" id="remember" name="remember" value="check" <?php echo $saved_username ? 'checked' : ''; ?>> Recuérdame<br><br>
+        <button type="submit">Enter</button>
+    </form>
+</body>
+</html>
