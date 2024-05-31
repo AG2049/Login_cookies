@@ -1,0 +1,33 @@
+<?php
+session_start();
+
+// Ejemplo de credenciales para validar (debes cambiar esto con la validación real)
+$valid_username = 'admin';
+$valid_password = 'password123';
+
+// Validar las credenciales del usuario
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Suponiendo que la validación es exitosa
+    if ($username === $valid_username && $password === $valid_password) {
+        $_SESSION['username'] = $username;
+
+        // Si el usuario marca "Recuérdame"
+        if (isset($_POST['remember'])) {
+            setcookie('username', $username, time() + (86400 * 30), "/"); // Expira en 30 días
+            setcookie('password', $password, time() + (86400 * 30), "/");
+        } else {
+            // Si no, eliminar las cookies
+            setcookie('username', '', time() - 3600, "/");
+            setcookie('password', '', time() - 3600, "/");
+        }
+
+        header("Location: welcome.php");
+        exit();
+    } else {
+        echo "Credenciales incorrectas";
+    }
+}
+?>
