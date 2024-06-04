@@ -1,0 +1,65 @@
+*/
+
+:root {
+    --dark: #16191C;
+    --dark-x: #1E2126; 
+    --light: #ffffff;
+}
+
+body {
+    font-family: 'Spartan', sans-serif;
+    font-weight: 300;
+    background-color:#1E2126 !important; /* Color de fondo personalizado */
+}
+
+.text-light { color: var(--light) !important; }
+.bg-dark { background-color: var(--dark) !important; }
+.bg-dark-x { background-color: var(--dark-x); }
+
+.bg-custom-dark {
+    background-color: #1E2126 !important; /* Color de fondo personalizado */
+}
+
+body.bg-custom-dark {
+    background-color: #1E2126;
+
+
+}
+.login-box .btn-primary {
+    background: linear-gradient(to right, #7e57c2, #ab47bc);
+    border: none;
+}
+
+.login-box .btn-primary:hover {
+    background: linear-gradient(to right, #ab47bc, #7e57c2);
+}
+
+.login-box a {
+    color: #ab47bc;
+}
+
+.login-box a:hover {
+    color: #7e57c2;
+}
+
+
+.form-control {
+    min-height: 3.125rem;
+    line-height: initial;
+}
+.form-control:focus {
+    background-color: var(--dark-x);
+    outline: none;
+}
+
+.img-1 {
+    background-image: url('img-1.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.img-2 {
+    background-image: url('img-2.jpg');
+    background-size: cover;
+    background-position: center;
+}
