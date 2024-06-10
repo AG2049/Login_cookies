@@ -9,6 +9,6 @@ if (isset($_COOKIE['username']) && isset($_COOKIE['password'])) {
     setcookie('password', '', time() - 3600, "/");
 }
 
-header("Location: index.php");
+header("Location: ../Index.php");
 exit();
 ?>

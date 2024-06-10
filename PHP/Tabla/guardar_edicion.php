@@ -3,7 +3,7 @@ session_start();
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
+    header("Location: ../../Index.php");
     exit();
 }
 
@@ -20,6 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     error_log("ID: $id, Nombre: $nombre, Descripción: $descripcion, Precio: $precio");
 
     // Redireccionar a welcome.php
-    header("Location: welcome.php");
+    header("Location: ../../welcome.php");
     exit();
 }

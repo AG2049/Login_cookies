@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 
 // Redirigir a welcome.php si la sesión ya está iniciada
 if (isset($_SESSION['username'])) {
-    header("Location: welcome.php?login=success");
+    header("Location: PHP/welcome.php?login=success");
     exit();
 }
 

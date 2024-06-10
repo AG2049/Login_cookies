@@ -95,7 +95,7 @@
         </tbody>
     </table>
     <div class="mt-3">
-        <a href="index.php" class="btn btn-primary">Regresar</a>
+        <a href="../../Index.php" class="btn btn-primary">Regresar</a>
         <button id="btnEditar" class="btn btn-warning">Editar</button>
         <button id="btnEliminar" class="btn btn-danger">Eliminar</button>
     </div>

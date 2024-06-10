@@ -3,7 +3,7 @@ session_start();
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
+    header("Location: ../../Index.php");
     exit();
 }
 
@@ -40,7 +40,7 @@ $precio = $_GET['precio'];
             <input type="text" class="form-control" id="precio" name="precio" value="<?php echo htmlspecialchars($precio); ?>">
         </div>
         <div class="mt-3">
-            <a href="welcome.php" class="btn btn-primary">Cancelar</a>
+            <a href="../welcome.php" class="btn btn-primary">Cancelar</a>
             <button type="submit" class="btn btn-warning" id="btnGuardar">Guardar</button>
             <button type="submit" name="guardar_continuar" class="btn btn-success" id="btnGuardarContinuar">Guardar y continuar</button>
         </div>

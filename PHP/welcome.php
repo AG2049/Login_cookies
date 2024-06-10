@@ -1,10 +1,19 @@
 <?php
 session_start();
+ini_set('display_errors',E_ALL);
+include("SQL/products.php");
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
+    header("Location: ../Index.php");
     exit();
+}
+
+// Variable de sesión para mostrar la alerta de inicio de sesión exitoso una sola vez
+if (!isset($_SESSION['login_success'])) {
+    $_SESSION['login_success'] = true;
+} else {
+    $_SESSION['login_success'] = false;
 }
 ?>
 <!DOCTYPE html>
@@ -24,6 +33,11 @@ if (!isset($_SESSION['username'])) {
     <!-- Incluir SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <script>
+        function eliminarProducto(id){
+            document.getElementById("id_producto").value = id;
+            document.getElementById("deleteForm").submit();
+        }
+
         function inicializaDataTables(){
             $('#miTabla').DataTable();
         }
@@ -34,7 +48,7 @@ if (!isset($_SESSION['username'])) {
             // Manejar clic en botón "Ver"
             $('.btn-ver').click(function() {
                 // Redireccionar a registro.php
-                window.location.href = 'registro.php';
+                window.location.href = 'Tabla/registro.php';
             });
 
             // Manejar clic en botón "Editar"
@@ -45,36 +59,39 @@ if (!isset($_SESSION['username'])) {
                 var precio = $(this).closest('tr').find('td:eq(3)').text();
 
                 // Redireccionar a edicion.php con parámetros
-                window.location.href = `edicion.php?id=${id}&nombre=${nombre}&descripcion=${descripcion}&precio=${precio}`;
+                window.location.href = `Tabla/edicion.php?id=${id}&nombre=${nombre}&descripcion=${descripcion}&precio=${precio}`;
             });
 
             // Manejar clic en botón "Eliminar"
             $('.btn-eliminar').click(function() {
-                var fila = $(this).closest('tr');
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "Esta acción no se puede deshacer",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
+            var fila = $(this).closest('tr');
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Eliminado!',
+                        'Tu registro ha sido eliminado.',
+                        'success'
+                    );
+                        var id = fila.find('td:eq(0)').text(); // Obtener el ID del producto de la primera columna
+                        eliminarProducto(id);
                         fila.remove();
-                        Swal.fire(
-                            'Eliminado!',
-                            'Tu registro ha sido eliminado.',
-                            'success'
-                        );
                     }
                 });
             });
-            // Verificar si el parámetro 'login=success' está en la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('login') === 'success') {
+
+            // Mostrar alerta de inicio de sesión exitoso solo una vez
+            if (<?php echo json_encode($_SESSION['login_success']); ?>) {
                 mostrarAlertaLoginExitoso();
+                <?php $_SESSION['login_success'] = false; ?>
             }
 
             function mostrarAlertaLoginExitoso() {
@@ -91,7 +108,7 @@ if (!isset($_SESSION['username'])) {
 </head>
 <body>
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb3">
         <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
         <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
     </div>
@@ -107,123 +124,33 @@ if (!isset($_SESSION['username'])) {
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio</th>
+                        <th>Imagen</th>
+                        <th>Disponibilidad</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Supongamos que llenas la tabla con datos desde tu base de datos -->
-                    <tr class="table-primary">
-                        <td>1</td>
-                        <td>Producto 1</td>
-                        <td>Descripción 1</td>
-                        <td>$100</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm btn-editar">Editar</button>
-                            <button class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>2</td>
-                        <td>Producto 2</td>
-                        <td>Descripción 2</td>
-                        <td>$200</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm btn-editar">Editar</button>
-                            <button class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>3</td>
-                        <td>Producto 3</td>
-                        <td>Descripción 3</td>
-                        <td>$300</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm btn-editar">Editar</button>
-                            <button class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>4</td>
-                        <td>Producto 4</td>
-                        <td>Descripción 4</td>
-                        <td>$400</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>5</td>
-                        <td>Producto 5</td>
-                        <td>Descripción 5</td>
-                        <td>$500</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>6</td>
-                        <td>Producto 6</td>
-                        <td>Descripción 6</td>
-                        <td>$600</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>7</td>
-                        <td>Producto 7</td>
-                        <td>Descripción 7</td>
-                        <td>$700</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>8</td>
-                        <td>Producto 8</td>
-                        <td>Descripción 8</td>
-                        <td>$800</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>9</td>
-                        <td>Producto 9</td>
-                        <td>Descripción 9</td>
-                        <td>$900</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td>10</td>
-                        <td>Producto 10</td>
-                        <td>Descripción 10</td>
-                        <td>$1000</td>
-                        <td>
-                            <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                            <button class="btn btn-warning btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </td>
-                    </tr>
+                    <?php
+                        for($i=0; $i<count($id_producto); $i++){
+                            echo '<tr class="table-primary">';
+                            echo "<td>{$id_producto[$i]}</td>";
+                            echo "<td>{$nombre_producto[$i]}</td>";
+                            echo "<td>{$descripcion_producto[$i]}</td>";
+                            echo "<td>{$precio_producto[$i]}</td>";
+                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen"></td>';
+                            echo "<td>{$numero_disponibles[$i]}</td>";
+                            echo '<td>
+                                    <button class="btn btn-info btn-sm btn-ver">Ver</button>
+                                    <button class="btn btn-warning btn-sm btn-editar">Editar</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
+                                  </td>';
+                        }
+                    ?>
                 </tbody>
             </table>
+            <form id="deleteForm" action="SQL/DeleteProduct.php" method="POST">
+                <input type="hidden" id="id_producto" name="id_producto">
+            </form>
         </div>
     </div>
 </div>
