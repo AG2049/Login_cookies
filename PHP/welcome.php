@@ -57,9 +57,20 @@ if (!isset($_SESSION['login_success'])) {
                 var nombre = $(this).closest('tr').find('td:eq(1)').text();
                 var descripcion = $(this).closest('tr').find('td:eq(2)').text();
                 var precio = $(this).closest('tr').find('td:eq(3)').text();
+                var imagen = $(this).closest('tr').find('img').attr('src');
+                var disponibilidad = $(this).closest('tr').find('td:eq(5)').text();
 
                 // Redireccionar a edicion.php con parámetros
-                window.location.href = `Tabla/edicion.php?id=${id}&nombre=${nombre}&descripcion=${descripcion}&precio=${precio}`;
+                var form = $('<form action="Tabla/edicion.php" method="POST">' +
+                '<input type="hidden" name="id" value="' + id + '" />' +
+                '<input type="hidden" name="nombre" value="' + nombre + '" />' +
+                '<input type="hidden" name="descripcion" value="' + descripcion + '" />' +
+                '<input type="hidden" name="precio" value="' + precio + '" />' +
+                '<input type="hidden" name="imagen" value="' + imagen + '" />' +
+                '<input type="hidden" name="disponibilidad" value="' + disponibilidad + '" />' +
+                '</form>');
+                $('body').append(form);
+                form.submit();
             });
 
             // Manejar clic en botón "Eliminar"
@@ -137,7 +148,7 @@ if (!isset($_SESSION['login_success'])) {
                             echo "<td>{$nombre_producto[$i]}</td>";
                             echo "<td>{$descripcion_producto[$i]}</td>";
                             echo "<td>{$precio_producto[$i]}</td>";
-                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen"></td>';
+                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="350px"></td>';
                             echo "<td>{$numero_disponibles[$i]}</td>";
                             echo '<td>
                                     <button class="btn btn-info btn-sm btn-ver">Ver</button>

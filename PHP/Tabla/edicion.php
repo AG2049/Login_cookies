@@ -8,10 +8,12 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Obtener datos de la URL
-$id = $_GET['id'];
-$nombre = $_GET['nombre'];
-$descripcion = $_GET['descripcion'];
-$precio = $_GET['precio'];
+$id = $_POST['id'];
+$nombre = $_POST['nombre'];
+$descripcion = $_POST['descripcion'];
+$precio = $_POST['precio'];
+$imagen = $_POST['imagen'];
+$disponibilidad = $_POST['disponibilidad'];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -25,7 +27,7 @@ $precio = $_GET['precio'];
 <body>
 <div class="container mt-5">
     <h1>Editar Producto</h1>
-    <form id="formEdicion" action="guardar_edicion.php" method="post">
+    <form id="formEdicion" action="guardar_edicion.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
         <div class="form-group">
             <label for="nombre">Nombre</label>
@@ -38,6 +40,15 @@ $precio = $_GET['precio'];
         <div class="form-group">
             <label for="precio">Precio</label>
             <input type="text" class="form-control" id="precio" name="precio" value="<?php echo htmlspecialchars($precio); ?>">
+        </div>
+        <div class="form-group">
+            <label for="precio">Imagen</label><p/>
+            <img src="<?php echo htmlspecialchars($imagen); ?>" alt="Imagen" class="img-thumbnail" id="imagenActual">
+            <input type="file" class="form-control" id="imagen" name="imagen">
+        </div>
+        <div class="form-group">
+            <label for="precio">Disponibilidad</label>
+            <input type="text" class="form-control" id="disponibilidad" name="disponibilidad" value="<?php echo htmlspecialchars($disponibilidad); ?>">
         </div>
         <div class="mt-3">
             <a href="../welcome.php" class="btn btn-primary">Cancelar</a>
