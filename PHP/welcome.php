@@ -1,11 +1,11 @@
 <?php
 session_start();
-ini_set('display_errors',E_ALL);
+ini_set('display_errors', E_ALL);
 include("SQL/products.php");
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: ../Index.php");
+    header("Location: index.php");
     exit();
 }
 
@@ -33,22 +33,56 @@ if (!isset($_SESSION['login_success'])) {
     <!-- Incluir SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
     <script>
-        function eliminarProducto(id){
-            document.getElementById("id_producto").value = id;
-            document.getElementById("deleteForm").submit();
-        }
-
-        function inicializaDataTables(){
-            $('#miTabla').DataTable();
+        function eliminarProducto(id) {
+            $.ajax({
+                url: 'PHP/eliminar_producto.php', // Archivo que procesará la solicitud
+                type: 'POST',
+                data: { id_producto: id },
+                success: function(response) {
+                    if (response == 'success') {
+                        Swal.fire(
+                            'Eliminado!',
+                            'Tu registro ha sido eliminado.',
+                            'success'
+                        );
+                        $('#producto-' + id).remove();
+                    } else {
+                        Swal.fire(
+                            'Error',
+                            'No se pudo eliminar el producto.',
+                            'error'
+                        );
+                    }
+                }
+            });
         }
 
         $(document).ready(function() {
-            inicializaDataTables();
+            $('#miTabla').DataTable();
+
+            // Manejar búsqueda en tiempo real
+            $('#buscarProducto').on('keyup', function() {
+                var valorBusqueda = $(this).val();
+                $.ajax({
+                    url: 'PHP/buscar_producto.php',
+                    type: 'POST',
+                    data: { query: valorBusqueda },
+                    success: function(response) {
+                        $('tbody').html(response);
+                    }
+                });
+            });
 
             // Manejar clic en botón "Ver"
             $('.btn-ver').click(function() {
-                // Redireccionar a registro.php
-                window.location.href = 'Tabla/registro.php';
+                var id = $(this).closest('tr').find('td:eq(0)').text();
+                var nombre = $(this).closest('tr').find('td:eq(1)').text();
+                var descripcion = $(this).closest('tr').find('td:eq(2)').text();
+                var precio = $(this).closest('tr').find('td:eq(3)').text();
+                var imagen = $(this).closest('tr').find('img').attr('src');
+                var disponibilidad = $(this).closest('tr').find('td:eq(5)').text();
+                // Redireccionar a registro.php con parámetros
+                window.location.href = 'registro.php?id=' + id + '&nombre=' + encodeURIComponent(nombre) + '&descripcion=' + encodeURIComponent(descripcion) + '&precio=' + encodeURIComponent(precio) + '&imagen=' + encodeURIComponent(imagen) + '&disponibilidad=' + encodeURIComponent(disponibilidad);
             });
 
             // Manejar clic en botón "Editar"
@@ -75,26 +109,19 @@ if (!isset($_SESSION['login_success'])) {
 
             // Manejar clic en botón "Eliminar"
             $('.btn-eliminar').click(function() {
-            var fila = $(this).closest('tr');
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Esta acción no se puede deshacer",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Eliminado!',
-                        'Tu registro ha sido eliminado.',
-                        'success'
-                    );
-                        var id = fila.find('td:eq(0)').text(); // Obtener el ID del producto de la primera columna
+                var id = $(this).closest('tr').find('td:eq(0)').text(); // Obtener el ID del producto de la primera columna
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Esta acción no se puede deshacer",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         eliminarProducto(id);
-                        fila.remove();
                     }
                 });
             });
@@ -104,6 +131,12 @@ if (!isset($_SESSION['login_success'])) {
                 mostrarAlertaLoginExitoso();
                 <?php $_SESSION['login_success'] = false; ?>
             }
+
+            // Manejar clic en botón "Agregar"
+            $('.btn-agregar').click(function() {
+                // Redirigir a edicion.php con parámetros vacíos
+                window.location.href = 'Tabla/edicion.php?id=&nombre=&descripcion=&precio=&imagen=&disponibilidad=';
+            });
 
             function mostrarAlertaLoginExitoso() {
                 Swal.fire({
@@ -120,7 +153,7 @@ if (!isset($_SESSION['login_success'])) {
 <body>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb3">
-        <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+        <h1>Bienvenido, <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : ''; ?>!</h1>
         <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
     </div>
     <div class="card">
@@ -128,6 +161,9 @@ if (!isset($_SESSION['login_success'])) {
             <h2 class="card-title">Catálogo</h2>
         </div>
         <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-success btn-agregar"> &#x1f7a6;</button>
+            </div>
             <table id="miTabla" class="table table-striped table-bordered" style="width:100%">
                 <thead class="thead-dark">
                     <tr>
@@ -142,26 +178,28 @@ if (!isset($_SESSION['login_success'])) {
                 </thead>
                 <tbody>
                     <?php
-                        for($i=0; $i<count($id_producto); $i++){
-                            echo '<tr class="table-primary">';
-                            echo "<td>{$id_producto[$i]}</td>";
-                            echo "<td>{$nombre_producto[$i]}</td>";
-                            echo "<td>{$descripcion_producto[$i]}</td>";
-                            echo "<td>{$precio_producto[$i]}</td>";
-                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="350px"></td>';
-                            echo "<td>{$numero_disponibles[$i]}</td>";
-                            echo '<td>
-                                    <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                                    <button class="btn btn-warning btn-sm btn-editar">Editar</button>
-                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
-                                  </td>';
+                        if (is_array($id_producto) && is_array($nombre_producto) && is_array($descripcion_producto) && is_array($precio_producto) && is_array($imagen_producto) && is_array($numero_disponibles)) {
+                            for($i=0; $i<count($id_producto); $i++){
+                                echo '<tr class="table-primary" id="producto-' . $id_producto[$i] . '">';
+                                echo "<td>{$id_producto[$i]}</td>";
+                                echo "<td>{$nombre_producto[$i]}</td>";
+                                echo "<td>{$descripcion_producto[$i]}</td>";
+                                echo "<td>{$precio_producto[$i]}</td>";
+                                echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen"></td>';
+                                echo "<td>{$numero_disponibles[$i]}</td>";
+                                echo '<td>
+                                        <button class="btn btn-info btn-sm btn-ver">Ver</button>
+                                        <button class="btn btn-warning btn-sm btn-editar">Editar</button>
+                                        <button type="button" class="btn btn-danger btn-sm btn-eliminar" data-id="' . $id_producto[$i] . '">Eliminar</button>
+                                    </td>';
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="7">No hay productos disponibles</td></tr>';
                         }
                     ?>
                 </tbody>
             </table>
-            <form id="deleteForm" action="SQL/DeleteProduct.php" method="POST">
-                <input type="hidden" id="id_producto" name="id_producto">
-            </form>
         </div>
     </div>
 </div>
