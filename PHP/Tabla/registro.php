@@ -1,3 +1,12 @@
+<?php
+// Recuperar los datos de la URL si están presentes
+$id = isset($_GET['id']) ? $_GET['id'] : null;
+$nombre = isset($_GET['nombre']) ? $_GET['nombre'] : null;
+$descripcion = isset($_GET['descripcion']) ? $_GET['descripcion'] : null;
+$precio = isset($_GET['precio']) ? $_GET['precio'] : null;
+$imagen = isset($_GET['imagen']) ? $_GET['imagen'] : null;
+$disponibilidad = isset($_GET['disponibilidad']) ? $_GET['disponibilidad'] : null;
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,94 +17,37 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container mt-5">
-    <h1>Tabla de Registro</h1>
-    <table id="miTabla" class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Seleccionar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="table-primary">
-                <td>1</td>
-                <td>Producto 1</td>
-                <td>Descripción 1</td>
-                <td>$100</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>2</td>
-                <td>Producto 2</td>
-                <td>Descripción 2</td>
-                <td>$200</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>3</td>
-                <td>Producto 3</td>
-                <td>Descripción 3</td>
-                <td>$300</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <!-- Agrega más filas según sea necesario -->
-            <tr class="table-primary">
-                <td>4</td>
-                <td>Producto 4</td>
-                <td>Descripción 4</td>
-                <td>$400</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>5</td>
-                <td>Producto 5</td>
-                <td>Descripción 5</td>
-                <td>$500</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>6</td>
-                <td>Producto 6</td>
-                <td>Descripción 6</td>
-                <td>$600</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>7</td>
-                <td>Producto 7</td>
-                <td>Descripción 7</td>
-                <td>$700</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>8</td>
-                <td>Producto 8</td>
-                <td>Descripción 8</td>
-                <td>$800</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>9</td>
-                <td>Producto 9</td>
-                <td>Descripción 9</td>
-                <td>$900</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-            <tr class="table-primary">
-                <td>10</td>
-                <td>Producto 10</td>
-                <td>Descripción 10</td>
-                <td>$1000</td>
-                <td><input type="checkbox" class="seleccionar"></td>
-            </tr>
-        </tbody>
+    <div class="container mt-5">
+        <h1>Tabla de Registro</h1>
+        <table id="miTabla" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Imagen</th>
+                    <th>Disponibilidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Mostrar los datos en la tabla
+                if ($id !== null && $nombre !== null && $descripcion !== null && $precio !== null && $imagen !== null && $disponibilidad !== null) {
+                    echo '<tr class="table-primary">';
+                    echo "<td>{$id}</td>";
+                    echo "<td>{$nombre}</td>";
+                    echo "<td>{$descripcion}</td>";
+                    echo "<td>{$precio}</td>";
+                    echo '<td><img src="' . $imagen . '" alt="Imagen"></td>';
+                    echo "<td>{$disponibilidad}</td>";
+                    echo '</tr>';
+                }
+                ?>
+            </tbody>
     </table>
     <div class="mt-3">
-        <a href="../../Index.php" class="btn btn-primary">Regresar</a>
+        <a href="Index.php" class="btn btn-primary">Regresar</a>
         <button id="btnEditar" class="btn btn-warning">Editar</button>
         <button id="btnEliminar" class="btn btn-danger">Eliminar</button>
     </div>
