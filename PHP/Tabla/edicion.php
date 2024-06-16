@@ -1,5 +1,6 @@
 <?php
 session_start();
+ini_set('display_errors',E_ALL);
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
@@ -8,10 +9,12 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Obtener datos de la URL
-$id = isset($_GET['id']) ? $_GET['id'] : '';
-$nombre = isset($_GET['nombre']) ? $_GET['nombre'] : '';
-$descripcion = isset($_GET['descripcion']) ? $_GET['descripcion'] : '';
-$precio = isset($_GET['precio']) ? $_GET['precio'] : '';
+$id = $_POST['id'];
+$nombre = $_POST['nombre'];
+$descripcion = $_POST['descripcion'];
+$precio = $_POST['precio'];
+$imagen = $_POST['imagen'];
+$disponibilidad = $_POST['disponibilidad'];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -19,12 +22,13 @@ $precio = isset($_GET['precio']) ? $_GET['precio'] : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edición</title>
+    <!-- Incluir CSS de Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
     <h1>Editar Producto</h1>
-    <form id="formEdicion" method="post">
+    <form id="formEdicion" action="guardar_edicion.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
         <div class="form-group">
             <label for="nombre">Nombre</label>
@@ -39,7 +43,12 @@ $precio = isset($_GET['precio']) ? $_GET['precio'] : '';
             <input type="text" class="form-control" id="precio" name="precio" value="<?php echo htmlspecialchars($precio); ?>">
         </div>
         <div class="form-group">
-            <label for="disponibilidad">Disponibilidad</label>
+            <label for="precio">Imagen</label><p/>
+            <img src="<?php echo htmlspecialchars($imagen); ?>" alt="Imagen" class="img-thumbnail" id="imagenActual">
+            <input type="file" class="form-control" id="imagen" name="imagen">
+        </div>
+        <div class="form-group">
+            <label for="precio">Disponibilidad</label>
             <input type="text" class="form-control" id="disponibilidad" name="disponibilidad" value="<?php echo htmlspecialchars($disponibilidad); ?>">
         </div>
         <div class="mt-3">
@@ -49,62 +58,51 @@ $precio = isset($_GET['precio']) ? $_GET['precio'] : '';
         </div>
     </form>
 </div>
+<!-- Incluir jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Incluir SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#formEdicion').submit(function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: 'guardar_edicion.php',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    var result = JSON.parse(response);
-                    if (result.status === 'success') {
-                        Swal.fire({
-                            title: 'Guardado',
-                            text: 'El producto ha sido guardado exitosamente.',
-                            icon: 'success',
-                            confirmButtonText: 'Ok'
-                        }).then(() => {
-                            window.location.href = '../welcome.php';
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: result.message,
-                            icon: 'error',
-                            confirmButtonText: 'Ok'
-                        });
-                    }
+        // Manejar el clic en el botón "Guardar"
+        $('#btnGuardar').click(function(event) {
+            event.preventDefault(); // Prevenir la sumisión del formulario inmediatamente
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¿Quieres guardar los cambios?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#formEdicion').submit(); // Enviar el formulario si se confirma
                 }
             });
         });
 
+        // Manejar el clic en el botón "Guardar y continuar"
         $('#btnGuardarContinuar').click(function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: 'guardar_edicion.php',
-                type: 'POST',
-                data: $('#formEdicion').serialize(),
-                success: function(response) {
-                    var result = JSON.parse(response);
-                    if (result.status === 'success') {
-                        Swal.fire({
-                            title: 'Guardado',
-                            text: 'El producto ha sido guardado exitosamente.',
-                            icon: 'success',
-                            confirmButtonText: 'Ok'
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: result.message,
-                            icon: 'error',
-                            confirmButtonText: 'Ok'
-                        });
-                    }
+            event.preventDefault(); // Prevenir la sumisión del formulario inmediatamente
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¿Quieres guardar los cambios y continuar editando?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, guardar y continuar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'guardar_continuar',
+                        value: 'true'
+                    }).appendTo('#formEdicion');
+                    $('#formEdicion').submit(); // Enviar el formulario si se confirma
                 }
             });
         });
@@ -112,4 +110,3 @@ $precio = isset($_GET['precio']) ? $_GET['precio'] : '';
 </script>
 </body>
 </html>
-
