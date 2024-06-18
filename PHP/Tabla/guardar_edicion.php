@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $precio = $_POST['precio'];
     $disponibilidad = intval($_POST['disponibilidad']);
     //Carga de la imagen
-    if (!empty($_FILES['imagen']['tmp_name'])) {
+    if ($id!="" && !empty($_FILES['imagen']['tmp_name'])) {
         $contenidoImagen = file_get_contents($_FILES['imagen']['tmp_name']);
         $imagenBASE64 = base64_encode($contenidoImagen);
         //Cargamos la Imagen si existe
@@ -28,7 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         IMG_producto = '$imagenBASE64', 
         NO_productos_disponibles = '$disponibilidad' 
         WHERE ID_producto = '$id'");
-    } else {
+    } 
+    else if ($id!="" ){
         //Cargamos los demas sin alterar la imagen
         $UPDATE_product = mysqli_query($conection, "UPDATE productos SET 
         NOM_producto = '$nombre', 
