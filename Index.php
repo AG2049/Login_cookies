@@ -12,48 +12,35 @@ $saved_password = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
 
 // Verificar si el usuario ya ha iniciado sesión
 if (isset($_SESSION['username'])) {
-    // Si el usuario ya está autenticado, redirigirlo a la página de bienvenida correspondiente
-    if ($_SESSION['user_type'] == 1) {
-        header("Location: PHP/welcome.php");
-    } else {
-        //header("Location: PHP/error.php");
-    }
+    header("Location: PHP/welcome.php?login=success");
     exit();
 }
 
 // Verificar si las cookies de "Recordarme" existen y si sí, intentar iniciar sesión directamente
 if (!empty($saved_username) && !empty($saved_password)) {
-    // Validar las credenciales del usuario utilizando las cookies
     for ($i = 0; $i < count($userName); $i++) {
         if ($saved_username === $userName[$i] && $saved_password === $passwords[$i]) {
-            // Almacenar el nombre de usuario y el tipo de usuario en la sesión
             $_SESSION['username'] = $saved_username;
             $_SESSION['user_type'] = $userType[$i];
-            
-            // Redirigir al usuario según su tipo
-            if ($userType[$i] == 1) {
-                // Si el usuario es admin (1), redirigir a la página de bienvenida de administrador
-                header("Location: PHP/welcome.php");
-            } else {
-                // Si el usuario no es admin (1), puedes redirigir a la página de bienvenida de usuario normal aquí si lo deseas
-            }
+            header("Location: PHP/welcome.php");
             exit();
         }
     }
 }
 
+// Validar las credenciales del usuario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Validar las credenciales del usuario
+    $isAuthenticated = false;
+
     for ($i = 0; $i < count($userName); $i++) {
         if ($username === $userName[$i] && $password === $passwords[$i]) {
-            // Almacenar el nombre de usuario y el tipo de usuario en la sesión
             $_SESSION['username'] = $username;
             $_SESSION['user_type'] = $userType[$i];
+            $isAuthenticated = true;
 
-            // Manejar la funcionalidad "Recordarme"
             if (isset($_POST['remember'])) {
                 setcookie('username', $username, time() + (86400 * 30), "/");
                 setcookie('password', $password, time() + (86400 * 30), "/");
@@ -62,22 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setcookie('password', '', time() - 3600, "/");
             }
 
-            // Redirigir al usuario según su tipo
-            if ($userType[$i] == 1) {
-                // Si el usuario es admin (1), redirigir a la página de bienvenida de administrador
-                header("Location: PHP/welcome.php");
-            } else {
-                // Si el usuario no es admin (1), redirigir a la página de bienvenida de usuario normal
-                //header("Location: PHP/welcome_normal.php?login=success");
-            }
+            header("Location: PHP/welcome.php");
             exit();
         }
     }
 
-    // Si las credenciales no coinciden, establecer un mensaje de error
-    $_SESSION['login_failed'] = true;
-    header("Location: PHP/error.php");
-    exit();
+    if (!$isAuthenticated) {
+        $_SESSION['login_failed'] = true;
+        header("Location: PHP/error.php");
+        exit();
+    }
 }
 ?>
 
@@ -86,10 +67,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - ROG</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link href="CSS/index.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #0f0f0f;
+            --dark-x: #1c1c1c; 
+            --light-text: #e0e0e0;
+            --primary-color: #bc002d;
+            --accent-color: #a3a3a3;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--dark-bg) !important;
+            color: var(--light-text);
+        }
+
+        .text-light { color: var(--light-text) !important; }
+        .bg-dark { background-color: var(--dark-bg) !important; }
+        .bg-dark-x { background-color: var(--dark-x); }
+
+        .bg-custom-dark {
+            background-color: var(--dark-bg) !important;
+        }
+
+        .login-box .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
+
+        .login-box .btn-primary:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+        .login-box a {
+            color: var(--accent-color);
+        }
+
+        .login-box a:hover {
+            color: lighten(var(--accent-color), 10%);
+        }
+
+        .form-control {
+            min-height: 3.125rem;
+            line-height: initial;
+            background-color: var(--dark-x);
+            color: var(--light-text);
+            border: 1px solid var(--accent-color);
+        }
+        .form-control:focus {
+            background-color: var(--dark-x);
+            color: var(--light-text);
+            outline: none;
+            border: 1px solid var(--primary-color);
+        }
+
+        .img-1 {
+            background-image: url('IMG/img-1.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .img-2 {
+            background-image: url('IMG/img-2.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .carousel-caption h5 {
+            font-weight: 700;
+            color: var(--light-text);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem;
+        }
+    </style>
 </head>
 <body class="bg-custom-dark text-white">
     <section>
@@ -103,13 +157,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="carousel-inner">
                         <div class="carousel-item img-1 min-vh-100 active">
                             <div class="carousel-caption d-none d-md-block">
-                                <!-- <h5 class="font-weight-bold">La más potente del mercado</h5> --> 
+                                <h5 class="font-weight-bold">Bienvenido a ROG</h5>
                             </div>
                         </div>
                         <div class="carousel-item img-2 min-vh-100">
                             <div class="carousel-caption d-none d-md-block">
-                                <!-- <h5 class="font-weight-bold">Descubre la nueva generación</h5> --> 
-                                <!-- <a class="text-muted text-decoration-none">Visita nuestra tienda</a> --> 
+                                <h5 class="font-weight-bold">La mejor experiencia de juego</h5>
                             </div>
                         </div>
                     </div>
@@ -128,20 +181,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="login-box px-lg-5 pt-lg-3 pb-lg-4 p-4">
                         <h2 class="text-center mb-4">Login</h2>
                         <form action="index.php" method="POST">
-                            <div class="form-group"> 
+                            <div class="form-group">
                                 <label for="username" class="form-label font-weight-bold">Usuario:</label>
-                                <input type="text" class="form-control bg-withe-x border-0" placeholder="Ingresa tu Usuario" id="username" name="username" value="<?php echo htmlspecialchars($saved_username); ?>" required>
+                                <input type="text" class="form-control" placeholder="Ingresa tu Usuario" id="username" name="username" value="<?php echo htmlspecialchars($saved_username); ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="password" class="form-label font-weight-bold">Contraseña:</label>
-                                <input type="password" class="form-control bg-withe-x border-0" placeholder="Ingresa tu Contraseña" id="password" name="password" value="<?php echo htmlspecialchars($saved_password); ?>" required>
+                                <input type="password" class="form-control" placeholder="Ingresa tu Contraseña" id="password" name="password" value="<?php echo htmlspecialchars($saved_password); ?>" required>
                             </div>
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="remember" name="remember" value="check" <?php echo $saved_username ? 'checked' : ''; ?>>
                                 <label class="form-check-label" for="remember">Recuérdame</label>
                             </div>
                             <button type="submit" class="btn btn-primary text-center w-100 align-self-center">Iniciar sesión ahora</button>
-                            <a href="#" class="d-block text-center mt-3 text-decoration-none text-info">¿Olvidaste tu contraseña?</a>
+                            <a href="#" class="d-block text-center mt-3 text-decoration-none">¿Olvidaste tu contraseña?</a>
                         </form>
                     </div>
                 </div>
