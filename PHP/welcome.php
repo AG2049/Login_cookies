@@ -55,7 +55,7 @@ if (!isset($_SESSION['login_success'])) {
                 <tbody>
                     <?php
                         for($i=0; $i<count($id_producto); $i++){
-                            echo '<tr class="table-primary">';
+                            echo '<tr class="table-primary" id="fila-'. $id_producto[$i] .'">';
                             echo "<td>{$id_producto[$i]}</td>";
                             echo "<td>{$nombre_producto[$i]}</td>";
                             echo "<td>{$descripcion_producto[$i]}</td>";
