@@ -6,36 +6,54 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-// Redirigir a welcome.php si la sesión ya está iniciada
-if (isset($_SESSION['username'])) {
-    header("Location: PHP/welcome.php?login=success");
-    exit();
-}
-
-// Iniciar sesión automáticamente si existen las cookies
-if (isset($_COOKIE['username']) && isset($_COOKIE['password'])) {
-    $_SESSION['username'] = $_COOKIE['username'];
-    header("Location: welcome.php?login=success");
-    exit();
-}
-
+// Obtener el nombre de usuario y la contraseña guardados de las cookies
 $saved_username = isset($_COOKIE['username']) ? $_COOKIE['username'] : '';
 $saved_password = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
 
-// Validar las credenciales del usuario
+// Verificar si el usuario ya ha iniciado sesión
+if (isset($_SESSION['username'])) {
+    // Si el usuario ya está autenticado, redirigirlo a la página de bienvenida correspondiente
+    if ($_SESSION['user_type'] == 1) {
+        header("Location: PHP/welcome.php");
+    } else {
+        //header("Location: PHP/error.php");
+    }
+    exit();
+}
+
+// Verificar si las cookies de "Recordarme" existen y si sí, intentar iniciar sesión directamente
+if (!empty($saved_username) && !empty($saved_password)) {
+    // Validar las credenciales del usuario utilizando las cookies
+    for ($i = 0; $i < count($userName); $i++) {
+        if ($saved_username === $userName[$i] && $saved_password === $passwords[$i]) {
+            // Almacenar el nombre de usuario y el tipo de usuario en la sesión
+            $_SESSION['username'] = $saved_username;
+            $_SESSION['user_type'] = $userType[$i];
+            
+            // Redirigir al usuario según su tipo
+            if ($userType[$i] == 1) {
+                // Si el usuario es admin (1), redirigir a la página de bienvenida de administrador
+                header("Location: PHP/welcome.php");
+            } else {
+                // Si el usuario no es admin (1), puedes redirigir a la página de bienvenida de usuario normal aquí si lo deseas
+            }
+            exit();
+        }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    
-    $isAuthenticated = false;
 
+    // Validar las credenciales del usuario
     for ($i = 0; $i < count($userName); $i++) {
         if ($username === $userName[$i] && $password === $passwords[$i]) {
+            // Almacenar el nombre de usuario y el tipo de usuario en la sesión
             $_SESSION['username'] = $username;
-            $isAuthenticated = true;
+            $_SESSION['user_type'] = $userType[$i];
 
-            // Si el usuario marca "Recuérdame"
+            // Manejar la funcionalidad "Recordarme"
             if (isset($_POST['remember'])) {
                 setcookie('username', $username, time() + (86400 * 30), "/");
                 setcookie('password', $password, time() + (86400 * 30), "/");
@@ -44,17 +62,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setcookie('password', '', time() - 3600, "/");
             }
 
-            header("Location: PHP/welcome.php");
+            // Redirigir al usuario según su tipo
+            if ($userType[$i] == 1) {
+                // Si el usuario es admin (1), redirigir a la página de bienvenida de administrador
+                header("Location: PHP/welcome.php");
+            } else {
+                // Si el usuario no es admin (1), redirigir a la página de bienvenida de usuario normal
+                //header("Location: PHP/welcome_normal.php?login=success");
+            }
             exit();
         }
     }
 
-    // Si no se encontró ninguna coincidencia
-    if (!$isAuthenticated) {
-        $_SESSION['login_failed'] = true;
-        header("Location: PHP/error.php");
-        exit();
-    }
+    // Si las credenciales no coinciden, establecer un mensaje de error
+    $_SESSION['login_failed'] = true;
+    header("Location: PHP/error.php");
+    exit();
 }
 ?>
 
@@ -66,65 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-    :root {
-        --dark: #16191C;
-        --dark-x: #1E2126; 
-        --light: #ffffff;
-    }
-
-    body {
-        font-family: 'Spartan', sans-serif;
-        font-weight: 300;
-        background-color:#1E2126 !important; /* Color de fondo personalizado */
-    }
-
-    .text-light { color: var(--light) !important; }
-    .bg-dark { background-color: var(--dark) !important; }
-    .bg-dark-x { background-color: var(--dark-x); }
-
-    .bg-custom-dark {
-        background-color: #1E2126 !important; /* Color de fondo personalizado */
-    }
-
-    .login-box .btn-primary {
-        background: linear-gradient(to right, #7e57c2, #ab47bc);
-        border: none;
-    }
-
-    .login-box .btn-primary:hover {
-        background: linear-gradient(to right, #ab47bc, #7e57c2);
-    }
-
-    .login-box a {
-        color: #ab47bc;
-    }
-
-    .login-box a:hover {
-        color: #7e57c2;
-    }
-
-    .form-control {
-        min-height: 3.125rem;
-        line-height: initial;
-    }
-    .form-control:focus {
-        background-color: var(--dark-x);
-        outline: none;
-    }
-
-    .img-1 {
-        background-image: url('IMG/img-1.jpg');
-        background-size: cover;
-        background-position: center;
-    }
-
-    .img-2 {
-        background-image: url('IMG/img-2.jpg');
-        background-size: cover;
-        background-position: center;
-    }
-    </style>
+    <link href="CSS/index.css" rel="stylesheet">
 </head>
 <body class="bg-custom-dark text-white">
     <section>
