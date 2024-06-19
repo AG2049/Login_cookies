@@ -1,49 +1,56 @@
 <?php
 session_start();
 
-// Redirigir a welcome.php si la sesión ya está iniciada
-if (isset($_SESSION['username'])) {
-    header("Location: welcome.php?login=success");
-    exit();
-}
+include("PHP/SQL/users.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Iniciar sesión automáticamente si existen las cookies
-if (isset($_COOKIE['username']) && isset($_COOKIE['password'])) {
-    $_SESSION['username'] = $_COOKIE['username'];
-    header("Location: welcome.php?login=success");
-    exit();
-}
+include("PHP/Utils/Autentication.php");
 
-$saved_username = isset($_COOKIE['username']) ? $_COOKIE['username'] : '';
-$saved_password = isset($_COOKIE['password']) ? $_COOKIE['password'] : '';
-
-// Credenciales válidas (debes reemplazarlas con tu validación real)
-$valid_username = 'admin';
-$valid_password = 'password123';
-
-// Validar las credenciales del usuario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    if ($username === $valid_username && $password === $valid_password) {
-        $_SESSION['username'] = $username;
+    // Validar las credenciales del usuario
+    for ($i = 0; $i < count($userName); $i++) {
+        if ($username === $userName[$i] && $password === $passwords[$i]) {
+            // Almacenar el nombre de usuario y el tipo de usuario en la sesión
+            $_SESSION['username'] = $username;
+            $_SESSION['user_type'] = $userType[$i];
 
-        // Si el usuario marca "Recuérdame"
-        if (isset($_POST['remember'])) {
-            setcookie('username', $username, time() + (86400 * 30), "/");
-            setcookie('password', $password, time() + (86400 * 30), "/");
-        } else {
-            setcookie('username', '', time() - 3600, "/");
-            setcookie('password', '', time() - 3600, "/");
+            // Manejar la funcionalidad "Recordarme"
+            if (isset($_POST['remember'])) {
+                setcookie('username', $username, time() + (86400 * 30), "/");
+                setcookie('password', $password, time() + (86400 * 30), "/");
+            } else {
+                setcookie('username', '', time() - 3600, "/");
+                setcookie('password', '', time() - 3600, "/");
+            }
+
+            // Redirigir al usuario según su tipo
+            if ($userType[$i] == 1) {
+                // Si el usuario es admin (1), redirigir a la página de bienvenida de administrador
+                header("Location: PHP/welcome.php");
+            } else {
+                // Si el usuario no es admin (1), redirigir a la página de bienvenida de usuario normal
+                //header("Location: PHP/welcome_normal.php?login=success");
+            }
+            exit();
         }
+    }
 
-        header("Location: welcome.php?login=success");
-        exit();
-    } else {
-        $_SESSION['login_failed'] = true;
-        header("Location: error.php");
-        exit();
+    // Si las credenciales no coinciden, establecer un mensaje de error
+    $_SESSION['login_failed'] = true;
+    header("Location: PHP/error.php");
+    exit();
+
+    if($fail=1){
+        echo "Swal.fire({";
+        echo 'title: "Error",';
+        echo 'text: "Usuario o contraseña incorrectos",';
+        echo 'icon: "error"';
+        echo "});";
     }
 }
 ?>
@@ -56,66 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/xampp/php/valdepeña/style.css">
-    <style>
-    :root {
-        --dark: #16191C;
-        --dark-x: #1E2126; 
-        --light: #ffffff;
-    }
-
-    body {
-        font-family: 'Spartan', sans-serif;
-        font-weight: 300;
-        background-color:#1E2126 !important; /* Color de fondo personalizado */
-    }
-
-    .text-light { color: var(--light) !important; }
-    .bg-dark { background-color: var(--dark) !important; }
-    .bg-dark-x { background-color: var(--dark-x); }
-
-    .bg-custom-dark {
-        background-color: #1E2126 !important; /* Color de fondo personalizado */
-    }
-
-    .login-box .btn-primary {
-        background: linear-gradient(to right, #7e57c2, #ab47bc);
-        border: none;
-    }
-
-    .login-box .btn-primary:hover {
-        background: linear-gradient(to right, #ab47bc, #7e57c2);
-    }
-
-    .login-box a {
-        color: #ab47bc;
-    }
-
-    .login-box a:hover {
-        color: #7e57c2;
-    }
-
-    .form-control {
-        min-height: 3.125rem;
-        line-height: initial;
-    }
-    .form-control:focus {
-        background-color: var(--dark-x);
-        outline: none;
-    }
-
-    .img-1 {
-        background-image: url('img-1.jpg');
-        background-size: cover;
-        background-position: center;
-    }
-
-    .img-2 {
-        background-image: url('img-2.jpg');
-        background-size: cover;
-        background-position: center;
-    }
-    </style>
+    <link href="CSS/index.css" rel="stylesheet">
 </head>
 <body class="bg-custom-dark text-white">
     <section>
@@ -128,16 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </ol>
                     <div class="carousel-inner">
                         <div class="carousel-item img-1 min-vh-100 active">
-                            <img src="/xampp/php/valdepeña/imagenes/img-1.jpg" class="d-block w-100" alt="...">
                             <div class="carousel-caption d-none d-md-block">
-                                <!-- <h5 class="font-weight-bold">La más potente del mercado</h5> --> 
+                                <h5 class="font-weight-bold">Bienvenido a ROG</h5> 
                             </div>
                         </div>
                         <div class="carousel-item img-2 min-vh-100">
-                            <img src="C:\Users\Antonio\OneDrive\Documents\PruebasPWeb" class="d-block w-100" alt="...">
                             <div class="carousel-caption d-none d-md-block">
-                                <!-- <h5 class="font-weight-bold">Descubre la nueva generación</h5> --> 
-                                <!-- <a class="text-muted text-decoration-none">Visita nuestra tienda</a> --> 
+                                <h5 class="font-weight-bold">La mejor experiencia de juego</h5> 
                             </div>
                         </div>
                     </div>
@@ -169,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label class="form-check-label" for="remember">Recuérdame</label>
                             </div>
                             <button type="submit" class="btn btn-primary text-center w-100 align-self-center">Iniciar sesión ahora</button>
-                            <a href="#" class="d-block text-center mt-3 text-decoration-none text-info">¿Olvidaste tu contraseña?</a>
+                            <a href="#" class="d-block text-center mt-3 text-decoration-none">¿Olvidaste tu contraseña?</a>
                         </form>
                     </div>
                 </div>
