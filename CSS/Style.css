@@ -10,6 +10,7 @@ body {
     font-family: 'Spartan', sans-serif;
     font-weight: 300;
     background-color:#1E2126 !important; /* Color de fondo personalizado */
+    overflow: hidden;
 }
 
 .text-light { color: var(--light) !important; }
@@ -53,13 +54,13 @@ body.bg-custom-dark {
 }
 
 .img-1 {
-    background-image: url('img-1.jpg');
+    background-image: url('../IMG/img-1.jpg');
     background-size: cover;
     background-position: center;
 }
 
 .img-2 {
-    background-image: url('img-2.jpg');
+    background-image: url('../IMG/img-2.jpg');
     background-size: cover;
     background-position: center;
 }

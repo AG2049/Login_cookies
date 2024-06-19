@@ -16,8 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion = $_POST['descripcion'];
     $precio = $_POST['precio'];
     $disponibilidad = intval($_POST['disponibilidad']);
+    $buttonType = $_POST['guardar_continuar'];
     //Carga de la imagen
-    if ($id!="" && !empty($_FILES['imagen']['tmp_name'])) {
+    if (!empty($_FILES['imagen']['tmp_name'])) {
         $contenidoImagen = file_get_contents($_FILES['imagen']['tmp_name']);
         $imagenBASE64 = base64_encode($contenidoImagen);
         //Cargamos la Imagen si existe
@@ -28,8 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         IMG_producto = '$imagenBASE64', 
         NO_productos_disponibles = '$disponibilidad' 
         WHERE ID_producto = '$id'");
-    } 
-    else if ($id!="" ){
+    } else {
         //Cargamos los demas sin alterar la imagen
         $UPDATE_product = mysqli_query($conection, "UPDATE productos SET 
         NOM_producto = '$nombre', 
@@ -48,7 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     // Redireccionar a welcome.php
-    mysqli_close($conection);//Cerramos la conexion
-    header("Location: ../welcome.php");
-    exit();
+    if($buttonType==true){
+        header("Location: ../Tabla/alta.php");
+        mysqli_close($conection);
+    }else{
+        mysqli_close($conection);
+        header("Location: ../welcome.php");
+        exit();
+    }
+    
 } 

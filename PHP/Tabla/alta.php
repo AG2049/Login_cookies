@@ -1,12 +1,6 @@
 <?php
 session_start();
-ini_set('display_errors',E_ALL);
-
-// Verificar si la sesión está iniciada
-if (!isset($_SESSION['username'])) {
-    header("Location: ../../Index.php");
-    exit();
-}
+include("../Utils/UserBlock.php");
 
 ?>
 <!DOCTYPE html>
@@ -47,7 +41,7 @@ if (!isset($_SESSION['username'])) {
             
             <a href="../welcome.php" class="btn btn-primary">Regresar</a>
             <button type="submit" class="btn btn-warning" id="btnGuardar">Guardar</button>
-            <button type="submit" name="guardar_continuar" class="btn btn-success" id="btnGuardarContinuar">Guardar y continuar</button>
+            <button type="submit" name="guardar_continuar" class="btn btn-success" id="btnGuardarContinuar" value="1">Guardar y continuar</button>
         </div>
     </form>
 </div>

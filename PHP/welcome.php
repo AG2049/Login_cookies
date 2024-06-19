@@ -2,12 +2,8 @@
 session_start();
 ini_set('display_errors',E_ALL);
 include("SQL/products.php");
-
+include("Utils/UserBlock.php");
 // Verificar si la sesión está iniciada
-if (!isset($_SESSION['username'])) {
-    header("Location: ../Index.php");
-    exit();
-}
 
 // Variable de sesión para mostrar la alerta de inicio de sesión exitoso una sola vez
 if (!isset($_SESSION['login_success'])) {

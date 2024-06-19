@@ -1,12 +1,21 @@
 <?php
 session_start();
 
+// Si no se establece el indicador de inicio de sesión fallido, redirigir a la página de inicio
 if (!isset($_SESSION['login_failed'])) {
     header("Location: ../Index.php");
     exit();
 } else {
-    unset($_SESSION['login_failed']); // Eliminar la variable para que la página de error no sea accesible directamente
+    // Eliminar la variable de sesión de inicio de sesión fallido
+    unset($_SESSION['login_failed']);
 }
+
+// Destruir completamente la sesión
+session_destroy();
+
+// Borrar las cookies
+setcookie('username', '', time() - 3600, "/");
+setcookie('password', '', time() - 3600, "/");
 ?>
 
 <!DOCTYPE html>

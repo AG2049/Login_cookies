@@ -1,7 +1,7 @@
 // Función para eliminar producto
 function eliminarProducto(id) {
     $.ajax({
-        url: 'eliminar_producto.php',
+        url: '../PHP/SQL/DeleteProduct.php',
         type: 'POST',
         data: { id_producto: id },
         success: function(response) {
