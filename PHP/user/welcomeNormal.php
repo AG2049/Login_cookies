@@ -1,15 +1,12 @@
 <?php
 session_start();
-ini_set('display_errors',E_ALL);
-include("SQL/products.php");
+ini_set('display_errors', E_ALL);
+include("../SQL/products.php");
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: ../Index.php");
+    header("Location: login.php"); // Redirigir a la página de inicio de sesión si no hay sesión activa
     exit();
-}
-if($_SESSION['user_type']==false){
-    //Usuario redireccion
 }
 
 // Variable de sesión para mostrar la alerta de inicio de sesión exitoso una sola vez
@@ -24,10 +21,12 @@ if (!isset($_SESSION['login_success'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo</title>
+    <title>Catálogo Normal</title>
     <!-- Incluir CSS de Bootstrap y DataTables -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <!-- Incluir Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -40,9 +39,6 @@ if (!isset($_SESSION['login_success'])) {
             <h2 class="card-title">Catálogo</h2>
         </div>
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <button class="btn btn-success btn-agregar"> &#x1f7a6;</button>
-            </div>
             <table id="miTabla" class="table table-striped table-bordered" style="width:100%">
                 <thead class="thead-dark">
                     <tr>
@@ -52,7 +48,7 @@ if (!isset($_SESSION['login_success'])) {
                         <th>Precio</th>
                         <th>Imagen</th>
                         <th>Disponibilidad</th>
-                        <th>Acciones</th>
+                        <th>Cantidad</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,20 +59,15 @@ if (!isset($_SESSION['login_success'])) {
                             echo "<td>{$nombre_producto[$i]}</td>";
                             echo "<td>{$descripcion_producto[$i]}</td>";
                             echo "<td>{$precio_producto[$i]}</td>";
-                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="350px"></td>';
+                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="100px"></td>';
                             echo "<td>{$numero_disponibles[$i]}</td>";
-                            echo '<td>
-                                    <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                                    <button class="btn btn-warning btn-sm btn-editar">Editar</button>
-                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
-                                  </td>';
+                            echo '<td><input type="number" class="form-control cantidad" name="cantidad" min="1" max="'.$numero_disponibles[$i].'" data-id="'.$id_producto[$i].'"></td>';
+                            echo '</tr>';
                         }
                     ?>
                 </tbody>
             </table>
-            <form id="deleteForm" action="SQL/DeleteProduct.php" method="POST">
-                <input type="hidden" id="id_producto" name="id_producto">
-            </form>
+            <a href="#" id="verCarrito" class="btn btn-primary">Ver Carrito</a>
         </div>
     </div>
 </div>
@@ -88,25 +79,75 @@ if (!isset($_SESSION['login_success'])) {
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 <!-- Incluir SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
-<script src="../JS/Botones_welcome.js"></script>
 <script>
-    $(document).ready(function() {
-        inicializaDataTables();
+$(document).ready(function() {
+    $('#miTabla').DataTable();
 
-        // Mostrar alerta de inicio de sesión exitoso solo una vez
-        if (<?php echo json_encode($_SESSION['login_success']); ?>) {
-            mostrarAlertaLoginExitoso();
-            <?php $_SESSION['login_success'] = false; ?>
-        }
-        function mostrarAlertaLoginExitoso() {
+    // Mostrar alerta de inicio de sesión exitoso solo una vez
+    if (<?php echo json_encode($_SESSION['login_success']); ?>) {
+        mostrarAlertaLoginExitoso();
+        <?php $_SESSION['login_success'] = false; ?>
+    }
+
+    function mostrarAlertaLoginExitoso() {
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Te has logeado exitosamente',
+            showConfirmButton: false,
+            timer: 1200
+        });
+    }
+
+    // Agregar producto al carrito
+    $('.cantidad').change(function() {
+        var id = $(this).data('id');
+        var cantidad = $(this).val();
+
+        if (cantidad <= 0 || cantidad == "") {
             Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Te has logeado exitosamente',
-                showConfirmButton: false,
-                timer: 1200
+                icon: 'error',
+                title: 'Error',
+                text: 'La cantidad debe ser mayor a 0.'
             });
+            return;
         }
+
+        // Agregar producto al carrito usando AJAX
+        $.post('agregar_al_carrito.php', {
+            id_producto: id,
+            cantidad: cantidad
+        }, function(response) {
+            if (response.success) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Producto agregado al carrito',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo agregar el producto al carrito.'
+                });
+            }
+        }, 'json');
     });
+
+    // Mostrar detalles del carrito al hacer clic en Ver Carrito
+    $('#verCarrito').click(function(e) {
+        e.preventDefault();
+        $.get('carrito.php', function(response) {
+            Swal.fire({
+                title: 'Detalles del Carrito',
+                html: response,
+                showCloseButton: true,
+                showConfirmButton: false
+            });
+        });
+    });
+});
 </script>
 </html>

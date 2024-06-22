@@ -1,7 +1,12 @@
 <?php
 session_start();
 ini_set('display_errors',E_ALL);
-include("../Utils/UserBlock.php");
+
+// Verificar si la sesión está iniciada
+if (!isset($_SESSION['username'])) {
+    header("Location: ../Index.php");
+    exit();
+}
 
 // Obtener datos de la URL
 $id = $_POST['id'];

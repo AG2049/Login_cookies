@@ -1,7 +1,12 @@
 <?php
 session_start();
-include("../Utils/UserBlock.php");
+ini_set('display_errors',E_ALL);
 
+// Verificar si la sesión está iniciada
+if (!isset($_SESSION['username'])) {
+    header("Location: ../Index.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">

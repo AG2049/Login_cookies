@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: PHP/welcome.php");
             } else {
                 // Si el usuario no es admin (1), redirigir a la página de bienvenida de usuario normal
-                //header("Location: PHP/welcome_normal.php?login=success");
+                header("Location: PHP/user/welcomeNormal.php");
             }
             exit();
         }
