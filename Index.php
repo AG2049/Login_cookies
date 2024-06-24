@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Manejar la funcionalidad "Recordarme"
             if (isset($_POST['remember'])) {
-                setcookie('username', $username, time() + (86400 * 30), "/");
-                setcookie('password', $password, time() + (86400 * 30), "/");
+                setcookie('username', base64_encode($username), time() + (86400 * 30), "/");
+                setcookie('password', base64_encode($password), time() + (86400 * 30), "/");
             } else {
                 setcookie('username', '', time() - 3600, "/");
                 setcookie('password', '', time() - 3600, "/");

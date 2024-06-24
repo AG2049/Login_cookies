@@ -2,6 +2,9 @@
 session_start();
 ini_set('display_errors',E_ALL);
 
+if($_SESSION['user_type']==false){
+    header("Location: ../user/welcomeNormal.php");
+}
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
     header("Location: ../Index.php");

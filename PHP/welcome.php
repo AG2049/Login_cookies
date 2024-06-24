@@ -9,7 +9,7 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 if($_SESSION['user_type']==false){
-    //Usuario redireccion
+    header("Location: user/welcomeNormal.php");
 }
 
 // Variable de sesión para mostrar la alerta de inicio de sesión exitoso una sola vez

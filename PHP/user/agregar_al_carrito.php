@@ -10,11 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_SESSION['carrito'][$id_producto])) {
-        $_SESSION['carrito'][$id_producto] += $cantidad;
+        $_SESSION['carrito'][$id_producto] = $cantidad;
     } else {
         $_SESSION['carrito'][$id_producto] = $cantidad;
     }
-
-    echo 'Producto agregado al carrito';
 }
 ?>

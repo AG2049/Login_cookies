@@ -30,9 +30,13 @@ if (!isset($_SESSION['carrito'])) {
         </thead>
         <tbody>
             <?php
+                $cantidadesExesivas = 0; 
                 $totalCompra = 0;
                 foreach ($_SESSION['carrito'] as $id_producto_carrito => $cantidad) {
                     $index = array_search($id_producto_carrito, $id_producto);
+                    if($cantidad>$numero_disponibles[$index]){
+                        $cantidadesExesivas = 1;
+                    }
                     if ($index !== false) {
                         $subtotal = $precio_producto[$index] * $cantidad;
                         $totalCompra += $subtotal;
@@ -52,7 +56,15 @@ if (!isset($_SESSION['carrito'])) {
         Total de la compra: $ <?php echo number_format($totalCompra, 2); ?>
     </div>
     <form action="comprar.php" method="POST">
-        <button type="submit" class="btn btn-success">Comprar</button>
+        <?php 
+            if($cantidadesExesivas==0){
+                echo '<button type="submit" class="btn btn-success">Comprar</button>';
+            }else{
+                echo 'Uno o mas productos tiene una cantidad mayor a su disponibilidad';
+                unset($_SESSION['carrito']);
+            }
+        ?>
+        
     </form>
 </div>
 </body>

@@ -5,7 +5,7 @@ include("../SQL/products.php");
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); // Redirigir a la página de inicio de sesión si no hay sesión activa
+    header("Location: ../../index.php"); // Redirigir a la página de inicio de sesión si no hay sesión activa
     exit();
 }
 
@@ -17,7 +17,7 @@ if (!isset($_SESSION['login_success'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" onload="carga();">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@ if (!isset($_SESSION['login_success'])) {
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb3">
         <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
-        <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
+        <a href="../logout.php" class="btn btn-danger">Cerrar sesión</a>
     </div>
     <div class="card">
         <div class="card-header">
@@ -41,8 +41,7 @@ if (!isset($_SESSION['login_success'])) {
         <div class="card-body">
             <table id="miTabla" class="table table-striped table-bordered" style="width:100%">
                 <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
+                    <tr>         
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio</th>
@@ -54,15 +53,16 @@ if (!isset($_SESSION['login_success'])) {
                 <tbody>
                     <?php
                         for($i=0; $i<count($id_producto); $i++){
-                            echo '<tr class="table-primary" id="fila-'. $id_producto[$i] .'">';
-                            echo "<td>{$id_producto[$i]}</td>";
-                            echo "<td>{$nombre_producto[$i]}</td>";
-                            echo "<td>{$descripcion_producto[$i]}</td>";
-                            echo "<td>{$precio_producto[$i]}</td>";
-                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="100px"></td>';
-                            echo "<td>{$numero_disponibles[$i]}</td>";
-                            echo '<td><input type="number" class="form-control cantidad" name="cantidad" min="1" max="'.$numero_disponibles[$i].'" data-id="'.$id_producto[$i].'"></td>';
-                            echo '</tr>';
+                            if($numero_disponibles[$i]>0){
+                                echo '<tr class="table-primary" id="fila-'. $id_producto[$i] .'">';
+                                echo "<td>{$nombre_producto[$i]}</td>";
+                                echo "<td>{$descripcion_producto[$i]}</td>";
+                                echo "<td>{$precio_producto[$i]}</td>";
+                                echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="300px"></td>';
+                                echo '<td><p id="disponibles">'.$numero_disponibles[$i].'</p></td>';
+                                echo '<td><input type="number" id="cantidad" class="form-control cantidad" name="cantidad" min="1" max="'.$numero_disponibles[$i].'" data-id="'.$id_producto[$i].'" value=0></td>';
+                                echo '</tr>';
+                            }
                         }
                     ?>
                 </tbody>
@@ -79,8 +79,8 @@ if (!isset($_SESSION['login_success'])) {
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 <!-- Incluir SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
+<script src="../../JS/WelcomeNormal.js"></script>
 <script>
-$(document).ready(function() {
     $('#miTabla').DataTable();
 
     // Mostrar alerta de inicio de sesión exitoso solo una vez
@@ -88,66 +88,5 @@ $(document).ready(function() {
         mostrarAlertaLoginExitoso();
         <?php $_SESSION['login_success'] = false; ?>
     }
-
-    function mostrarAlertaLoginExitoso() {
-        Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Te has logeado exitosamente',
-            showConfirmButton: false,
-            timer: 1200
-        });
-    }
-
-    // Agregar producto al carrito
-    $('.cantidad').change(function() {
-        var id = $(this).data('id');
-        var cantidad = $(this).val();
-
-        if (cantidad <= 0 || cantidad == "") {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'La cantidad debe ser mayor a 0.'
-            });
-            return;
-        }
-
-        // Agregar producto al carrito usando AJAX
-        $.post('agregar_al_carrito.php', {
-            id_producto: id,
-            cantidad: cantidad
-        }, function(response) {
-            if (response.success) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Producto agregado al carrito',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudo agregar el producto al carrito.'
-                });
-            }
-        }, 'json');
-    });
-
-    // Mostrar detalles del carrito al hacer clic en Ver Carrito
-    $('#verCarrito').click(function(e) {
-        e.preventDefault();
-        $.get('carrito.php', function(response) {
-            Swal.fire({
-                title: 'Detalles del Carrito',
-                html: response,
-                showCloseButton: true,
-                showConfirmButton: false
-            });
-        });
-    });
-});
 </script>
 </html>
