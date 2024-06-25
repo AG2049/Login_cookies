@@ -39,20 +39,21 @@ $(document).ready(function() {
     // Mostrar detalles del carrito al hacer clic en Ver Carrito
     $('#verCarrito').click(function(e) {
         e.preventDefault();
-        $.get('carrito.php', function(response) {
-            Swal.fire({
-                title: 'Detalles del Carrito',
-                html: response,
-                showCloseButton: true,
-                showConfirmButton: false
-            });
-        });
-        var cantidad = document.getElementById("cantidad");
-        var disponibles = document.getElementById("disponibles");
-        var disponiblesNum = disponibles.textContent || disponibles.innerText;
-        if(cantidad.value>disponiblesNum){
-            cantidad.value = 0;
-        }
+        //$.get('carrito.php', function(response) {
+        //    Swal.fire({
+        //        title: 'Detalles del Carrito',
+        //        html: response,
+        //        showCloseButton: true,
+        //        showConfirmButton: false
+        //    });
+        //});
+        //var cantidad = document.getElementById("cantidad");
+        //var disponibles = document.getElementById("disponibles");
+        //var disponiblesNum = disponibles.textContent || disponibles.innerText;
+        //if(cantidad.value>disponiblesNum){
+        //    cantidad.value = 0;
+        //}
+        window.location.href = "carrito.php";
     });
 });
 
