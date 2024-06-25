@@ -14,6 +14,36 @@ if (!isset($_SESSION['carrito'])) {
     <title>Carrito de Compras</title>
     <!-- Incluir CSS de Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* CSS personalizado para mejorar la presentación de la tabla */
+        .table td, .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .table img {
+            max-width: 50px;
+            height: auto;
+        }
+        .table th {
+            background-color: #343a40;
+            color: white;
+        }
+        .table td {
+            padding: 15px;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .alert-info {
+            text-align: center;
+        }
+        .btn-success {
+            display: block;
+            width: 100%;
+            font-size: 20px;
+            padding: 50px;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -41,7 +71,7 @@ if (!isset($_SESSION['carrito'])) {
                         $subtotal = $precio_producto[$index] * $cantidad;
                         $totalCompra += $subtotal;
                         echo '<tr>';
-                        echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$index] . '" alt="Imagen" width="100px"></td>';
+                        echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$index] . '" alt="Imagen"></td>';
                         echo "<td>{$nombre_producto[$index]}</td>";
                         echo "<td>{$cantidad}</td>";
                         echo "<td>$ {$precio_producto[$index]}</td>";
@@ -60,11 +90,10 @@ if (!isset($_SESSION['carrito'])) {
             if($cantidadesExesivas==0){
                 echo '<button type="submit" class="btn btn-success">Comprar</button>';
             }else{
-                echo 'Uno o mas productos tiene una cantidad mayor a su disponibilidad';
+                echo '<div class="alert alert-danger">Uno o más productos tienen una cantidad mayor a su disponibilidad</div>';
                 unset($_SESSION['carrito']);
             }
         ?>
-        
     </form>
 </div>
 </body>
