@@ -66,9 +66,9 @@ if (!isset($_SESSION['login_success'])) {
                             echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="350px"></td>';
                             echo "<td>{$numero_disponibles[$i]}</td>";
                             echo '<td>
-                                    <button class="btn btn-info btn-sm btn-ver">Ver</button>
-                                    <button class="btn btn-warning btn-sm btn-editar">Editar</button>
-                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar">Eliminar</button>
+                                    <button class="btn btn-info btn-sm btn-ver" onclick="verprod(this)">Ver</button>
+                                    <button class="btn btn-warning btn-sm btn-editar" onclick="editarprod(this)">Editar</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar" onclick="eliminarprod(this)">Eliminar</button>
                                   </td>';
                         }
                     ?>
