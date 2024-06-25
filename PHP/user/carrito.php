@@ -14,36 +14,7 @@ if (!isset($_SESSION['carrito'])) {
     <title>Carrito de Compras</title>
     <!-- Incluir CSS de Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        /* CSS personalizado para mejorar la presentación de la tabla */
-        .table td, .table th {
-            vertical-align: middle;
-            text-align: center;
-        }
-        .table img {
-            max-width: 50px;
-            height: auto;
-        }
-        .table th {
-            background-color: #343a40;
-            color: white;
-        }
-        .table td {
-            padding: 15px;
-        }
-        .container {
-            max-width: 800px;
-        }
-        .alert-info {
-            text-align: center;
-        }
-        .btn-success {
-            display: block;
-            width: 100%;
-            font-size: 20px;
-            padding: 50px;
-        }
-    </style>
+    <link rel="stylesheet" href="../../CSS/carrito.css">
 </head>
 <body>
 <div class="container mt-5">

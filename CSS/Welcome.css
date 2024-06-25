@@ -1,0 +1,11 @@
+.ProuctoImagen{
+    max-height: 400px;
+    max-width: 350px;
+    min-height: 400px;
+    text-align: center;
+    margin-top: 25%;
+}
+
+.ContenedorCentro{
+    text-align: center;
+}

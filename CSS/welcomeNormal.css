@@ -1,0 +1,5 @@
+.larger-swal-popup {
+    width: 60%; /* Ancho del contenedor de la alerta */
+    height: 80%; /* Altura del contenedor de la alerta */
+    /* Otros estilos para el contenedor de la alerta */
+}

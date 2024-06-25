@@ -28,6 +28,7 @@ if (!isset($_SESSION['login_success'])) {
     <!-- Incluir CSS de Bootstrap y DataTables -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../CSS/Welcome.css"
 </head>
 <body>
 <div class="container mt-5">
@@ -63,13 +64,13 @@ if (!isset($_SESSION['login_success'])) {
                             echo "<td>{$nombre_producto[$i]}</td>";
                             echo "<td>{$descripcion_producto[$i]}</td>";
                             echo "<td>{$precio_producto[$i]}</td>";
-                            echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" width="350px"></td>';
+                            echo '<td class="ContenedorCentro"><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" class="ProuctoImagen"></td>';
                             echo "<td>{$numero_disponibles[$i]}</td>";
-                            echo '<td>
-                                    <button class="btn btn-info btn-sm btn-ver" onclick="verprod(this)">Ver</button>
-                                    <button class="btn btn-warning btn-sm btn-editar" onclick="editarprod(this)">Editar</button>
-                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar" onclick="eliminarprod(this)">Eliminar</button>
-                                  </td>';
+                            echo '<td class="ContenedorCentro">
+                                    <button class="btn btn-info btn-sm btn-ver mb-2" onclick="verprod(this)">Ver</button>
+                                    <button class="btn btn-warning btn-sm btn-editar mb-2" onclick="editarprod(this)">Editar</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-eliminar mb-2" onclick="eliminarprod(this)">Eliminar</button>
+                                    </td>';
                         }
                     ?>
                 </tbody>

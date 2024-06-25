@@ -8,13 +8,22 @@ error_reporting(E_ALL);
 
 include("PHP/Utils/Autentication.php");
 
+// Definir variables $saved_username y $saved_password
+$saved_username = '';
+$saved_password = '';
+
+if (isset($_COOKIE['username']) && isset($_COOKIE['password'])) {
+    $saved_username = base64_decode($_COOKIE['username']);
+    $saved_password = base64_decode($_COOKIE['password']);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     // Validar las credenciales del usuario
     for ($i = 0; $i < count($userName); $i++) {
-        if ($username === $userName[$i] && $password === $passwords[$i]) {
+        if (base64_encode($username) === $userName[$i] && base64_encode($password) === $passwords[$i]) {
             // Almacenar el nombre de usuario y el tipo de usuario en la sesión
             $_SESSION['username'] = $username;
             $_SESSION['user_type'] = $userType[$i];
@@ -103,18 +112,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <form action="index.php" method="POST">
                             <div class="form-group"> 
                                 <label for="username" class="form-label font-weight-bold">Usuario:</label>
-                                <input type="text" class="form-control bg-withe-x border-0" placeholder="Ingresa tu Usuario" id="username" name="username" value="<?php echo htmlspecialchars($saved_username); ?>" required>
+                                <input type="text" class="form-control bg-withe-x border-0" style="background-color: #333333; color: #ffffff;" placeholder="Ingresa tu Usuario" id="username" name="username" value="<?php echo htmlspecialchars($saved_username); ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="password" class="form-label font-weight-bold">Contraseña:</label>
-                                <input type="password" class="form-control bg-withe-x border-0" placeholder="Ingresa tu Contraseña" id="password" name="password" value="<?php echo htmlspecialchars($saved_password); ?>" required>
+                                <input type="password" class="form-control bg-withe-x border-0" style="background-color: #333333; color: #ffffff;" placeholder="Ingresa tu Contraseña" id="password" name="password" value="<?php echo htmlspecialchars($saved_password); ?>" required>
                             </div>
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="remember" name="remember" value="check" <?php echo $saved_username ? 'checked' : ''; ?>>
                                 <label class="form-check-label" for="remember">Recuérdame</label>
                             </div>
                             <button type="submit" class="btn btn-primary text-center w-100 align-self-center">Iniciar sesión ahora</button>
-                            <a href="#" class="d-block text-center mt-3 text-decoration-none">¿Olvidaste tu contraseña?</a>
+                            <a href="register.php" class="d-block text-center mt-3 text-decoration-none">Crear una cuenta</a>
                         </form>
                     </div>
                 </div>

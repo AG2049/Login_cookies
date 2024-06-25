@@ -21,16 +21,17 @@ if (!isset($_SESSION['login_success'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Normal</title>
+    <title>Catálogo</title>
     <!-- Incluir CSS de Bootstrap y DataTables -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
     <!-- Incluir Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../../CSS/welcomeNormal.css">
 </head>
 <body>
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
         <a href="../logout.php" class="btn btn-danger">Cerrar sesión</a>
     </div>
@@ -39,6 +40,9 @@ if (!isset($_SESSION['login_success'])) {
             <h2 class="card-title">Catálogo</h2>
         </div>
         <div class="card-body">
+            <div class="d-flex justify-content-end mb-3">
+                <a href="#" id="verCarrito" class="btn btn-primary"><i class="fas fa-shopping-cart"></i></a>
+            </div>
             <table id="miTabla" class="table table-striped table-bordered" style="width:100%">
                 <thead class="thead-dark">
                     <tr>         
@@ -67,7 +71,6 @@ if (!isset($_SESSION['login_success'])) {
                     ?>
                 </tbody>
             </table>
-            <a href="#" id="verCarrito" class="btn btn-primary">Ver Carrito</a>
         </div>
     </div>
 </div>

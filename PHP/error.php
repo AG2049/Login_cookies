@@ -34,12 +34,5 @@ setcookie('password', '', time() - 3600, "/");
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
-    <script>
-        Swal.fire({
-            title: "Error",
-            text: "Usuario o contraseña incorrectos",
-            icon: "error"
-        });
-    </script>
 </body>
 </html>
