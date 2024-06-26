@@ -47,7 +47,7 @@ $disponibilidad = $_POST['disponibilidad'];
         </div>
         <div class="form-group">
             <label for="precio">Imagen</label><p/>
-            <img src="<?php echo htmlspecialchars($imagen); ?>" alt="Imagen" class="img-thumbnail" id="imagenActual">
+            <img src="../<?php echo htmlspecialchars($imagen); ?>" alt="Imagen" class="img-thumbnail" id="imagenActual">
         </div>
         <div class="form-group">
             <label for="precio">Disponibilidad</label>

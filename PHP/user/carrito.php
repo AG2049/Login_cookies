@@ -50,7 +50,7 @@ if (!isset($_SESSION['carrito'])) {
                     // Mostrar el producto solo si la cantidad en el carrito es mayor que 0
                     if ($cantidad > 0) {
                         echo '<tr>';
-                        echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$index] . '" alt="Imagen"></td>';
+                        echo '<td><img src="../../'.$imagen_producto[$index] .'" class="ProuctoImagen" alt="Imagen"></td>';
                         echo "<td>{$nombre_producto[$index]}</td>";
                         echo "<td>{$cantidad}</td>";
                         echo "<td>$ {$precio_producto[$index]}</td>";

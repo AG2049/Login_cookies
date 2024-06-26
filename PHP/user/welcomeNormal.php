@@ -63,7 +63,7 @@ if (!isset($_SESSION['login_success'])) {
                                 echo "<td>{$nombre_producto[$i]}</td>";
                                 echo "<td>{$descripcion_producto[$i]}</td>";
                                 echo "<td>{$precio_producto[$i]}</td>";
-                                echo '<td class="ContenedorCentro"><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" class="ProuctoImagen"></td>';
+                                echo '<td class="ContenedorCentro"><img src="../../'.$imagen_producto[$i] .'" class="ProuctoImagen" alt="Imagen"></td>';
                                 echo '<td><p id="disponibles-'.$id_producto[$i].'">'.$numero_disponibles[$i].'</p></td>';
                                 echo '<td><input type="number" id="cantidad-'.$id_producto[$i].'" class="form-control cantidad" name="cantidad" min="0" step="1" data-id="'.$id_producto[$i].'" value="" max="'.$numero_disponibles[$i].'"></td>';
                                 echo '</tr>';

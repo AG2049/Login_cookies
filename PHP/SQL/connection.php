@@ -1,6 +1,6 @@
 <?php
 
-    $conection = new mysqli("localhost","root","root","rog");
+    $conection = new mysqli("localhost","root","usbw","rog");
     if($conection){
 
     }else{

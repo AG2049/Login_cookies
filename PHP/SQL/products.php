@@ -14,7 +14,7 @@
         $nombre_producto[] = $registro[1];
         $descripcion_producto[] = $registro[2];
         $precio_producto[] = $registro[3];
-        $imagen_producto[] = base64_encode(base64_decode($registro[4]));
+        $imagen_producto[] = $registro[4];
         $numero_disponibles[] = $registro[5];
     }
 

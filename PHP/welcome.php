@@ -64,7 +64,7 @@ if (!isset($_SESSION['login_success'])) {
                             echo "<td>{$nombre_producto[$i]}</td>";
                             echo "<td>{$descripcion_producto[$i]}</td>";
                             echo "<td>{$precio_producto[$i]}</td>";
-                            echo '<td class="ContenedorCentro"><img src="data:image/jpeg;base64,' . $imagen_producto[$i] . '" alt="Imagen" class="ProuctoImagen"></td>';
+                            echo '<td class="ContenedorCentro"><img src="../'.$imagen_producto[$i] .'" class="ProuctoImagen"></td>';
                             echo "<td>{$numero_disponibles[$i]}</td>";
                             echo '<td class="ContenedorCentro">
                                     <button class="btn btn-info btn-sm btn-ver mb-2" onclick="verprod(this)">Ver</button>
