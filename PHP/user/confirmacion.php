@@ -16,5 +16,11 @@
     </div>
     <a href="welcomeNormal.php" class="btn btn-primary">Volver al catálogo</a>
 </div>
+<script>
+    window.onload = function() {
+        // Limpiar el localStorage
+        localStorage.clear();
+    };
+</script>
 </body>
 </html>

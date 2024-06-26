@@ -38,27 +38,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if(Contraseña($new_password)==false){
         //Alerta de que la contraseña no cumple parametros
+        echo json_encode(array('success' => 0));
         exit();
     }
     if(Usuario($new_username)==false){//requisitos usuario
         //Alerta de que la usuario no cumple parametros
+        echo json_encode(array('success' => 1));
         exit();
     }
     if($new_password!=$confirm_password){
         //No conincide contraseñas
+        echo json_encode(array('success' => 2));
         exit();
     }
     $PasswordCifrada = base64_encode($new_password);
     $UserCifrado = base64_encode($new_username);
     try {
         $InsertQuery = mysqli_query($conection, "INSERT INTO `usuarios` (`ID_usuario`,`user_name`,`password`) VALUES (NULL, '$UserCifrado', '$PasswordCifrada')");
+        echo json_encode(array('success' => 3));
     } catch (Exception $e) {
-        // Agregar el error de fallo en registrar con AJAX
+        echo json_encode(array('success' => 4));
         exit();
     }
-
-    // Redirigir al usuario a la página de inicio de sesión después de registrarse
-    header("Location: index.php");
     exit();
 }
 ?>
@@ -80,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="container">
                     <div class="login-box px-lg-5 pt-lg-3 pb-lg-4 p-4">
                         <h2 class="text-center mb-4">Crear una cuenta</h2>
-                        <form action="register.php" method="POST">
+                        <form action="register.php" method="POST" id="NewUser">
                             <div class="form-group"> 
                                 <label for="new_username" class="form-label font-weight-bold">Usuario:</label>
                                 <input type="text" class="form-control bg-withe-x border-0" style="background-color: #333333; color: #ffffff;" placeholder="Ingresa tu Usuario" id="new_username" name="new_username" required>
@@ -91,7 +92,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="form-group">
                                 <label for="new_password" class="form-label font-weight-bold">Confirmar contraseña:</label>
-                                <input type="password" class="form-control bg-withe-x border-0" style="background-color: #333333; color: #ffffff;" placeholder="Ingresa tu Contraseña" id="new_password" name="confirm_password" required>
+                                <input type="password" class="form-control bg-withe-x border-0" style="background-color: #333333; color: #ffffff;" placeholder="Confirma tu Contraseña" id="new_password2" name="confirm_password" required>
+                            </div>
+                            <div>
+                                <label for="">Tanto usuario como contraseña necesitan:</label>
+                                <ul>
+                                    <li>Tener mas de 8 y menos de 12 caracteres</li>
+                                    <li>Tener un numero</li>
+                                    <li>Tener minimo uno de estos caracteres ! @ # $ % ^ & *</li>
+                                </ul>
                             </div>
                             <button type="submit" class="btn btn-primary text-center w-100 align-self-center">Crear cuenta</button>
                             <a href="index.php" class="d-block text-center mt-3 text-decoration-none">Volver al inicio</a>
@@ -101,8 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </section>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="JS/Register.js"></script>
 </body>
 </html>

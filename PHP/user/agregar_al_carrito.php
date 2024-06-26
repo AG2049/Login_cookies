@@ -3,7 +3,7 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_producto = $_POST['id_producto'];
-    $cantidad = $_POST['cantidad'];
+    $cantidad = intval($_POST['cantidad']);
 
     if (!isset($_SESSION['carrito'])) {
         $_SESSION['carrito'] = array();

@@ -31,16 +31,24 @@ if (!isset($_SESSION['carrito'])) {
         </thead>
         <tbody>
             <?php
-                $cantidadesExesivas = 0; 
-                $totalCompra = 0;
-                foreach ($_SESSION['carrito'] as $id_producto_carrito => $cantidad) {
-                    $index = array_search($id_producto_carrito, $id_producto);
-                    if($cantidad>$numero_disponibles[$index]){
-                        $cantidadesExesivas = 1;
+            $totalCompra = 0;
+            $cantidadesExcesivas = false; // Variable para controlar si hay cantidades excesivas
+
+            foreach ($_SESSION['carrito'] as $id_producto_carrito => $cantidad) {
+                // Buscar el índice del producto en el array $id_producto
+                $index = array_search($id_producto_carrito, $id_producto);
+                if ($index !== false) {
+                    // Calcular el subtotal del producto
+                    $subtotal = $precio_producto[$index] * $cantidad;
+                    $totalCompra += $subtotal;
+
+                    // Verificar si la cantidad en el carrito es mayor que la disponibilidad
+                    if ($cantidad > $numero_disponibles[$index]) {
+                        $cantidadesExcesivas = true;
                     }
-                    if ($index !== false) {
-                        $subtotal = $precio_producto[$index] * $cantidad;
-                        $totalCompra += $subtotal;
+
+                    // Mostrar el producto solo si la cantidad en el carrito es mayor que 0
+                    if ($cantidad > 0) {
                         echo '<tr>';
                         echo '<td><img src="data:image/jpeg;base64,' . $imagen_producto[$index] . '" alt="Imagen"></td>';
                         echo "<td>{$nombre_producto[$index]}</td>";
@@ -50,22 +58,26 @@ if (!isset($_SESSION['carrito'])) {
                         echo '</tr>';
                     }
                 }
+            }
             ?>
         </tbody>
     </table>
+
+    <!-- Mostrar el total de la compra -->
     <div class="alert alert-info" role="alert">
         Total de la compra: $ <?php echo number_format($totalCompra, 2); ?>
     </div>
-    <form action="comprar.php" method="POST">
-        <?php 
-            if($cantidadesExesivas==0){
-                echo '<button type="submit" class="btn btn-success">Comprar</button>';
-            }else{
-                echo '<div class="alert alert-danger">Uno o más productos tienen una cantidad mayor a su disponibilidad</div>';
-                unset($_SESSION['carrito']);
-            }
-        ?>
-    </form>
+
+    <!-- Mostrar mensaje de error si hay cantidades excesivas -->
+    <?php if ($cantidadesExcesivas): ?>
+        <div class="alert alert-danger">Uno o más productos tienen una cantidad mayor a su disponibilidad</div>
+    <?php else: ?>
+        <!-- Mostrar el botón de compra si no hay cantidades excesivas -->
+        <form action="comprar.php" method="POST">
+            <button type="submit" class="btn btn-success">Comprar</button>
+        </form>
+    <?php endif; ?>
+
 </div>
 </body>
 <!-- Incluir jQuery -->

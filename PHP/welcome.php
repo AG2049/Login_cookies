@@ -5,7 +5,7 @@ include("SQL/products.php");
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['username'])) {
-    header("Location: ../Index.php");
+    header("Location: ../index.php");
     exit();
 }
 if($_SESSION['user_type']==false){

@@ -4,7 +4,7 @@ $(document).ready(function() {
         var id = $(this).data('id');
         var cantidad = $(this).val();
 
-        if (cantidad < 0 || cantidad == "") {
+        if (cantidad < 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',

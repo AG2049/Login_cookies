@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['login_failed'])) {
-    header("Location: ../Index.php");
+    header("Location: ../index.php");
     exit();
 }
 
