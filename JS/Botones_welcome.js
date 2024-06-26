@@ -38,8 +38,6 @@ function inicializaDataTables() {
 
 $(document).ready(function() {
     inicializaDataTables();
-
-    // Manejar clic en botón "Ver"
         // Manejar clic en botón "Guardar"
         $('#btnGuardar').click(function() {
             var data = {

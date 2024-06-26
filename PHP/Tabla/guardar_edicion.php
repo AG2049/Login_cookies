@@ -1,6 +1,6 @@
 <?php
 session_start();
-ini_set('display_errors',E_ALL);
+header('Content-Type: application/json');
 include("../SQL/connection.php");
 
 if($_SESSION['user_type']==false){
@@ -32,6 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         IMG_producto = '$imagenBASE64', 
         NO_productos_disponibles = '$disponibilidad' 
         WHERE ID_producto = '$id'");
+        if($buttonType==true){
+            echo json_encode(array('success' => 1));
+            mysqli_close($conection);
+            exit();
+        }else{
+            echo json_encode(array('success' => 2));
+            mysqli_close($conection);
+            exit();
+        }
     } else {
         //Cargamos los demas sin alterar la imagen
         $UPDATE_product = mysqli_query($conection, "UPDATE productos SET 
@@ -40,23 +49,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         PREC_producto = '$precio',
         NO_productos_disponibles = '$disponibilidad' 
         WHERE ID_producto = '$id'");
+        if($buttonType==true){
+            echo json_encode(array('success' => 1));
+            mysqli_close($conection);
+            exit();
+        }else{
+            echo json_encode(array('success' => 2));
+            mysqli_close($conection);
+            exit();
+        }
     }
     //Comprobamos que no exista ID para agregar un nuevo producto
     if($id=="" && $nombre!="" && $descripcion!="" && $precio!="" && $disponibilidad!=""){
         if (!empty($_FILES['imagen']['tmp_name'])) {
             $contenidoImagen = file_get_contents($_FILES['imagen']['tmp_name']);
             $imagenBASE64 = base64_encode($contenidoImagen);
-            //Preparamos la consulta
+            $INSERT_product = mysqli_query($conection, "INSERT INTO `productos` (`ID_producto`,`NOM_producto`, `DES_producto`, `PREC_producto`, `IMG_producto`, `NO_productos_disponibles`) VALUES (NULL,'$nombre', '$descripcion',$precio,'$imagenBASE64',$disponibilidad)");
+        }else{
+            echo json_encode(array('success' => 0));
+            exit();
+        }
+    }else{
+        if (!empty($_FILES['imagen']['tmp_name'])) {
+            $contenidoImagen = file_get_contents($_FILES['imagen']['tmp_name']);
+            $imagenBASE64 = base64_encode($contenidoImagen);
             $INSERT_product = mysqli_query($conection, "INSERT INTO `productos` (`ID_producto`,`NOM_producto`, `DES_producto`, `PREC_producto`, `IMG_producto`, `NO_productos_disponibles`) VALUES (NULL,'$nombre', '$descripcion',$precio,'$imagenBASE64',$disponibilidad)");
         }
+        echo json_encode(array('success' => 0));
+        exit();
     }
     // Redireccionar a welcome.php
     if($buttonType==true){
-        header("Location: ../Tabla/alta.php");
+        echo json_encode(array('success' => 1));
         mysqli_close($conection);
     }else{
+        echo json_encode(array('success' => 2));
         mysqli_close($conection);
-        header("Location: ../welcome.php");
         exit();
     }
     

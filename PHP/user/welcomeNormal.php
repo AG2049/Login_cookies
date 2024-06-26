@@ -32,7 +32,7 @@ if (!isset($_SESSION['login_success'])) {
 <body>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+        <h1>Bienvenido, <?php echo htmlspecialchars(base64_decode(base64_encode($_SESSION['username']))); ?>!</h1>
         <a href="../logout.php" class="btn btn-danger">Cerrar sesión</a>
     </div>
     <div class="card">

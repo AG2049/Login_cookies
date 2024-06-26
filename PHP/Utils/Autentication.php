@@ -30,7 +30,7 @@ if (!empty($saved_username) && !empty($saved_password)) {
                 // Si el usuario es admin (1), redirigir a la página de bienvenida de administrador
                 header("Location: PHP/welcome.php");
             } else {
-                // Si el usuario no es admin (1), puedes redirigir a la página de bienvenida de usuario normal aquí si lo deseas
+                header("Location: PHP/user/welcomeNormal.php");
             }
             exit();
         }

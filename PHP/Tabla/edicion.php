@@ -65,6 +65,7 @@ $disponibilidad = $_POST['disponibilidad'];
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Incluir SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="../../JS/Edicion.js"></script>
 <script>
     $(document).ready(function() {
         // Manejar el clic en el botón "Guardar"
